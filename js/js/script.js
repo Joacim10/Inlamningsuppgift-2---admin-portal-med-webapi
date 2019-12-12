@@ -57,8 +57,6 @@ function getNotifications() {
   })}
 
 
-
-
 getTotal('Sales', 'https://inlupp-fa.azurewebsites.net/api/total-sales')
 getTotal('Purchases', 'https://inlupp-fa.azurewebsites.net/api/total-purchases')
 getTotal('Orders', 'https://inlupp-fa.azurewebsites.net/api/total-orders')
@@ -71,18 +69,19 @@ function getTotal(id, url) {
 }
 
 
-
-
-getTotalGraph('projects', 'https://inlupp-fa.azurewebsites.net/api/total-projects')
+getTotalGraph('Projects', 'https://inlupp-fa.azurewebsites.net/api/total-projects')
+getTotalGraph('Users', 'https://inlupp-fa.azurewebsites.net/api/total-users')
 
 function getTotalGraph(id, url) {
   fetch(url) 
   .then(res => res.json())
-  .then(data => document.getElementById(`total${id}`).getElementsByTagName('h2')[0].text = `${data.id}`)
-  .then(data => document.getElementById(`total${id}`).getElementsByTagName('i')[0].text = `+${data.growth}%`)
+  .then(data => {
+
+    let idSmall = id.toLowerCase()
+    document.getElementById(`total${id}`).getElementsByTagName("h2")[0].innerHTML = `${data[idSmall]}`;
+    document.getElementById(`total${id}`).getElementsByTagName("p")[0].innerHTML = `+${data.growth}%`
+  })
 }
-
-
 
 
 

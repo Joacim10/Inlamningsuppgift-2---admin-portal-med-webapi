@@ -144,19 +144,19 @@
                   <div class="d-flex flex-wrap mb-4 mt-4 pb-4">
                     <div class="mr-4 mr-md-5">
                       <p class="mb-0">Revenue</p>
-                      <h4>13,956</h4>
+                      <h4 id="revenueValue"></h4>
                     </div>
                     <div class="mr-4 mr-md-5">
                       <p class="mb-0">Returns</p>
-                      <h4>27,219</h4>
+                      <h4 id="returnsValue"></h4>
                     </div>
                     <div class="mr-4 mr-md-5">
                       <p class="mb-0">Queries</p>
-                      <h4>03,386</h4>
+                      <h4 id="queriesValue"></h4>
                     </div>
                     <div class="mr-4 mr-md-5">
                       <p class="mb-0">Invoices</p>
-                      <h4>04,739</h4>
+                      <h4 id="invoicesValue"></h4>
                     </div>
                   </div>
                   <canvas id="total-sales-chart"></canvas>
@@ -498,55 +498,7 @@
                           <th class="text-muted">Status</th>
                         </tr>
                       </thead>
-                      <tbody>
-                        <tr>
-                          <td>50014</td>
-                          <td>David Grey</td>
-                          <td>Italy</td>
-                          <td class="font-weight-bold">$6300</td>
-                          <td>$2100</td>
-                          <td><div class="badge badge-success badge-fw">Progress</div></td>
-                        </tr>
-                        <tr>
-                          <td>50015</td>
-                          <td>Stella Johnson</td>
-                          <td>Brazil</td>
-                          <td class="font-weight-bold">$4500</td>
-                          <td>$4300</td>
-                          <td><div class="badge badge-warning badge-fw">Open</div></td>
-                        </tr>
-                        <tr>
-                          <td>50016</td>
-                          <td>Marina Michel</td>
-                          <td>Japan</td>
-                          <td class="font-weight-bold">$4300</td>
-                          <td>$6440</td>
-                          <td><div class="badge badge-danger badge-fw">On hold</div></td>
-                        </tr>
-                        <tr>
-                          <td>50017</td>
-                          <td>John Doe</td>
-                          <td>India</td>
-                          <td class="font-weight-bold">$6400</td>
-                          <td>$2200</td>
-                          <td><div class="badge badge-success badge-fw">Progress</div></td>
-                        </tr>
-                        <tr>
-                          <td>50015</td>
-                          <td>Stella Johnson</td>
-                          <td>Brazil</td>
-                          <td class="font-weight-bold">$4500</td>
-                          <td>$4300</td>
-                          <td><div class="badge badge-warning badge-fw">Open</div></td>
-                        </tr>
-                        <tr>
-                          <td>50014</td>
-                          <td>David Grey</td>
-                          <td>Italy</td>
-                          <td class="font-weight-bold">$6300</td>
-                          <td>$2100</td>
-                          <td><div class="badge badge-success badge-fw">Progress</div></td>
-                        </tr>
+                      <tbody id="tableBodyInvoices">
                       </tbody>
                     </table>
                   </div>

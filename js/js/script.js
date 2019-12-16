@@ -1,5 +1,4 @@
 
-
 getFullName('Joacim', 'Hammarström')
 
 function getFullName(firstName, lastName) {
@@ -55,6 +54,7 @@ function getNotifications() {
       </a>`);
         }
   })}
+
 
 
 getTotal('Sales', 'https://inlupp-fa.azurewebsites.net/api/total-sales')
@@ -264,26 +264,36 @@ function totalSalesGraph() {
   .then(res => res.json())
   .then(data => {
 
-    
-    a = data.revenue
-    
-    console.log(a)
-    
-    a = data.returns
-    a = data.queries
-    a = data.invoices
-    
-    a = data.labels
-    a = data.datasets[0].data
-    a = data.datasets[1].data
+    document.getElementById('revenueValue').innerHTML = `${numberWithCommas(data.revenue)}`;
+    document.getElementById('returnsValue').innerHTML = `${numberWithCommas(data.returns)}`;
+    document.getElementById('queriesValue').innerHTML = `${numberWithCommas(data.queries)}`;
+    document.getElementById('invoicesValue').innerHTML = `${numberWithCommas(data.invoices)}`;
 
+
+  function getGraphData() {
+    let labels = data.labels;
+    for (x in labels) {
+        areaData.labels.push(labels[x])
+    }
+
+    let values = data.datasets[0].data;
+    for (x in values) {    
+        areaData.datasets[0].data.push(values[x]) 
+
+    }
+
+    let values2 = data.datasets[1].data;
+    for (x in values2) {    
+        areaData.datasets[1].data.push(values2[x]) 
+    }
+  }
 
 if ($("#total-sales-chart").length) {
   var areaData = {
-    labels: ["Mon","","Tue","", "Wed","", "Thu","", "Fri","", "Sat"],
+    labels: [],
     datasets: [
       {
-        data: [240000, 200000, 290000, 230000, 200000, 180000, 180000, 360000, 240000, 280000, 180000],
+        data: [],
         backgroundColor: [
           'rgba(61, 165, 244, .0)'
         ],
@@ -295,7 +305,7 @@ if ($("#total-sales-chart").length) {
         label: "services"
       },
       {
-        data: [160000, 120000, 175000, 290000, 380000, 210000, 320000, 150000, 310000, 180000, 160000],
+        data: [],
         backgroundColor: [
           'rgba(241, 83, 110, .0)'
         ],
@@ -308,6 +318,9 @@ if ($("#total-sales-chart").length) {
       }
     ]
   };
+
+  getGraphData()
+
   var areaOptions = {
     responsive: true,
     maintainAspectRatio: true,
@@ -601,3 +614,49 @@ function getDistribution(info) {
     }
 
   })}
+
+  getOpenInvoices ()
+
+  function getOpenInvoices() {
+
+  fetch('https://inlupp-fa.azurewebsites.net/api/open-invoices')
+  .then(res => res.json())
+  .then(data => {
+
+    let table = document.getElementById('tableBodyInvoices');
+
+    generateTable(table, data)
+
+    function generateTable(table, data) {
+      for (let element of data) {
+        let row = table.insertRow();
+
+        for (key in element) {
+          let cell = row.insertCell();
+          let text = document.createTextNode(element[key]);
+
+          switch(element[key]) {
+            case 'Progress':
+                div = document.createElement('div')
+                div.className = 'badge badge-success badge-fw'
+                div.appendChild(text);
+                cell.appendChild(div);
+                break;
+            case 'Open':
+                div = document.createElement('div')
+                div.className = 'badge badge-warning badge-fw'
+                div.appendChild(text);
+                cell.appendChild(div);
+                break;
+            case 'On hold':
+                div = document.createElement('div')
+                div.className = 'badge badge-danger badge-fw'
+                div.appendChild(text);
+                cell.appendChild(div);
+                break;
+            default:
+                cell.appendChild(text);
+              }
+        }}}
+  })
+  }

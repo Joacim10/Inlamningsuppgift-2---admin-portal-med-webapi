@@ -43,13 +43,33 @@ function getNotifications() {
     .then(res => res.json())
     .then(notifications => {
       for (n in notifications) {
+
+        switch (notifications[n].subtitle) {
+          case 'Just now': 
+          {color = 'success'
+          symbol = 'information'
+          }
+            break
+          case 'Private message': 
+          {color = 'warning'
+          symbol = 'settings'
+          }
+            break
+          case '2 days ago': 
+          {color = 'info'
+          symbol = 'account-box'
+          } 
+            break
+        }
+
+
         document.getElementById("dropDownforNotifications").insertAdjacentHTML(
           "beforeend",
           `                  
         <a class="dropdown-item preview-item">
         <div class="preview-thumbnail">
-          <div class="preview-icon bg-success">
-            <i class="mdi mdi-information mx-0"></i>
+          <div class="preview-icon bg-${color}">
+            <i class="mdi mdi-${symbol} mx-0"></i>
           </div>
         </div>
         <div class="preview-item-content">
@@ -59,16 +79,14 @@ function getNotifications() {
           </p>
         </div>
       </a>`
-        );
+       );
       }
     });
 }
 
+
 getTotal("Sales", "https://inlupp-fa.azurewebsites.net/api/total-sales");
-getTotal(
-  "Purchases",
-  "https://inlupp-fa.azurewebsites.net/api/total-purchases"
-);
+getTotal("Purchases", "https://inlupp-fa.azurewebsites.net/api/total-purchases");
 getTotal("Orders", "https://inlupp-fa.azurewebsites.net/api/total-orders");
 getTotal("Growth", "https://inlupp-fa.azurewebsites.net/api/total-growth");
 
@@ -83,10 +101,8 @@ function getTotal(id, url) {
     );
 }
 
-getTotalGraph(
-  "Projects",
-  "https://inlupp-fa.azurewebsites.net/api/total-projects"
-);
+
+getTotalGraph("Projects", "https://inlupp-fa.azurewebsites.net/api/total-projects");
 getTotalGraph("Users", "https://inlupp-fa.azurewebsites.net/api/total-users");
 
 function getTotalGraph(id, url) {
@@ -291,18 +307,10 @@ function totalSalesGraph() {
   fetch("https://inlupp-fa.azurewebsites.net/api/total-sales-chart")
     .then(res => res.json())
     .then(data => {
-      document.getElementById("revenueValue").innerHTML = `${numberWithCommas(
-        data.revenue
-      )}`;
-      document.getElementById("returnsValue").innerHTML = `${numberWithCommas(
-        data.returns
-      )}`;
-      document.getElementById("queriesValue").innerHTML = `${numberWithCommas(
-        data.queries
-      )}`;
-      document.getElementById("invoicesValue").innerHTML = `${numberWithCommas(
-        data.invoices
-      )}`;
+      document.getElementById("revenueValue").innerHTML = `${numberWithCommas(data.revenue)}`;
+      document.getElementById("returnsValue").innerHTML = `${numberWithCommas(data.returns)}`;
+      document.getElementById("queriesValue").innerHTML = `${numberWithCommas(data.queries)}`;
+      document.getElementById("invoicesValue").innerHTML = `${numberWithCommas(data.invoices)}`;
 
       function getGraphData() {
         let labels = data.labels;
@@ -451,16 +459,8 @@ function downloads() {
       let onlineAmount = data[1].onlineAmount;
       let onlineCircleValue = data[1].circleValue;
 
-      document
-        .getElementById(`downloadsOffline`)
-        .getElementsByTagName("h2")[0].innerHTML = `${numberWithCommas(
-        offlineAmount
-      )}`;
-      document
-        .getElementById(`downloadsOnline`)
-        .getElementsByTagName("h2")[0].innerHTML = `${numberWithCommas(
-        onlineAmount
-      )}`;
+      document.getElementById(`downloadsOffline`).getElementsByTagName("h2")[0].innerHTML = `${numberWithCommas(offlineAmount)}`;
+      document.getElementById(`downloadsOnline`).getElementsByTagName("h2")[0].innerHTML = `${numberWithCommas(onlineAmount)}`;
 
       if ($("#offlineProgress").length) {
         var bar = new ProgressBar.Circle(offlineProgress, {
@@ -668,33 +668,60 @@ function getOpenInvoices() {
       function generateTable(table, data) {
         for (let element of data) {
           let row = table.insertRow();
+          var preSymbol = ''
+          var columnCount = 0;
 
           for (key in element) {
-            let cell = row.insertCell();
+
             let text = document.createTextNode(element[key]);
+            var cell
 
             switch (element[key]) {
+              case "€":
+                preSymbol = '€'
+                break;
+              case "$":
+                preSymbol = '$'
+                break;
+              case "Closed":
+                cell = row.insertCell();
+                text = document.createTextNode(element[key]);
+                cell.appendChild(text);                 
+                break;
               case "Progress":
+                preSymbol = ''
+                cell = row.insertCell();
                 div = document.createElement("div");
                 div.className = "badge badge-success badge-fw";
                 div.appendChild(text);
                 cell.appendChild(div);
                 break;
               case "Open":
+                preSymbol = ''
+                cell = row.insertCell();
                 div = document.createElement("div");
                 div.className = "badge badge-warning badge-fw";
                 div.appendChild(text);
                 cell.appendChild(div);
                 break;
               case "On hold":
+                preSymbol = ''
+                cell = row.insertCell();
                 div = document.createElement("div");
                 div.className = "badge badge-danger badge-fw";
                 div.appendChild(text);
                 cell.appendChild(div);
                 break;
               default:
+                cell = row.insertCell();
+                text = document.createTextNode(preSymbol+element[key]);
                 cell.appendChild(text);
+
+                if (columnCount === 4) {
+                  cell.className = 'font-weight-bold';
+                }
             }
+            columnCount++
           }
         }
       }
@@ -707,12 +734,8 @@ function getSalesReport() {
   fetch("https://inlupp-fa.azurewebsites.net/api/sales-report")
     .then(res => res.json())
     .then(data => {
-      document.getElementById(
-        "salesReportDownloads"
-      ).innerText = numberWithCommas(data.downloads);
-      document.getElementById(
-        "salesReportPurchases"
-      ).innerText = numberWithCommas(data.purchases);
+      document.getElementById("salesReportDownloads").innerText = numberWithCommas(data.downloads);
+      document.getElementById("salesReportPurchases").innerText = numberWithCommas(data.purchases);
       document.getElementById("salesReportUsers").innerText = data.users;
       document.getElementById("salesReportGrowth").innerText = data.growth;
 
@@ -728,19 +751,7 @@ function getSalesReport() {
               {
                 label: "Europe",
                 data: data.datasets[0].data,
-                backgroundColor: [
-                  "#3da5f4",
-                  "#e0f2ff",
-                  "#3da5f4",
-                  "#e0f2ff",
-                  "#3da5f4",
-                  "#e0f2ff",
-                  "#3da5f4",
-                  "#e0f2ff",
-                  "#3da5f4",
-                  "#e0f2ff",
-                  "#3da5f4"
-                ]
+                backgroundColor: ["#3da5f4", "#e0f2ff", "#3da5f4", "#e0f2ff", "#3da5f4", "#e0f2ff", "#3da5f4", "#e0f2ff", "#3da5f4", "#e0f2ff", "#3da5f4"]
               }
             ]
           },
@@ -821,7 +832,6 @@ function getSalesReport() {
       }
     });
 }
-
 
 document.getElementById('dropdown2017').addEventListener("click", function(event){
   event.preventDefault()
@@ -905,7 +915,6 @@ function getTickets(year) {
       }
     });
 }
-
 
 getUpdates();
 
